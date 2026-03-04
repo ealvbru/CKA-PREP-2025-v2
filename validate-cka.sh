@@ -192,42 +192,42 @@ validate_q4() {
 
   # Check deployment exists
   check 4 "Deployment 'wordpress' exists" \
-    "kubectl get deployment wordpress -o name 2>/dev/null | grep -q 'deployment'"
+    "kubectl get deployment -n resource-allocation wordpress -o name 2>/dev/null | grep -q 'deployment'"
 
   # Check replicas = 3
   check 4 "Deployment has 3 replicas" \
-    "kubectl get deployment wordpress -o jsonpath='{.spec.replicas}' 2>/dev/null | grep -q '3'"
+    "kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.replicas}' 2>/dev/null | grep -q '3'"
 
   # Check main container has resource requests
   check 4 "Main container has CPU requests defined" \
-    "kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.requests.cpu}' 2>/dev/null | grep -qE '.+'"
+    "kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.requests.cpu}' 2>/dev/null | grep -qE '.+'"
 
   check 4 "Main container has memory requests defined" \
-    "kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.requests.memory}' 2>/dev/null | grep -qE '.+'"
+    "kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.requests.memory}' 2>/dev/null | grep -qE '.+'"
 
   check 4 "Main container has CPU limits defined" \
-    "kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.limits.cpu}' 2>/dev/null | grep -qE '.+'"
+    "kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.limits.cpu}' 2>/dev/null | grep -qE '.+'"
 
   check 4 "Main container has memory limits defined" \
-    "kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.limits.memory}' 2>/dev/null | grep -qE '.+'"
+    "kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.limits.memory}' 2>/dev/null | grep -qE '.+'"
 
   # Check init container has resource requests/limits
   check 4 "Init container has CPU requests defined" \
-    "kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.initContainers[0].resources.requests.cpu}' 2>/dev/null | grep -qE '.+'"
+    "kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.initContainers[0].resources.requests.cpu}' 2>/dev/null | grep -qE '.+'"
 
   check 4 "Init container has memory requests defined" \
-    "kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.initContainers[0].resources.requests.memory}' 2>/dev/null | grep -qE '.+'"
+    "kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.initContainers[0].resources.requests.memory}' 2>/dev/null | grep -qE '.+'"
 
   # Check init and main containers have SAME resource values
   check 4 "Init and main containers have matching CPU requests" \
-    "[ \"\$(kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.requests.cpu}' 2>/dev/null)\" = \"\$(kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.initContainers[0].resources.requests.cpu}' 2>/dev/null)\" ]"
+    "[ \"\$(kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.requests.cpu}' 2>/dev/null)\" = \"\$(kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.initContainers[0].resources.requests.cpu}' 2>/dev/null)\" ]"
 
   check 4 "Init and main containers have matching memory requests" \
-    "[ \"\$(kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.requests.memory}' 2>/dev/null)\" = \"\$(kubectl get deployment wordpress -o jsonpath='{.spec.template.spec.initContainers[0].resources.requests.memory}' 2>/dev/null)\" ]"
+    "[ \"\$(kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.containers[0].resources.requests.memory}' 2>/dev/null)\" = \"\$(kubectl get deployment -n resource-allocation wordpress -o jsonpath='{.spec.template.spec.initContainers[0].resources.requests.memory}' 2>/dev/null)\" ]"
 
   # Check pods are running
   check 4 "All 3 pods are Running" \
-    "[ \$(kubectl get pods -l app=wordpress --field-selector=status.phase=Running --no-headers 2>/dev/null | wc -l) -ge 3 ]"
+    "[ \$(kubectl get pods -n resource-allocation -l app=wordpress --field-selector=status.phase=Running --no-headers 2>/dev/null | wc -l) -ge 3 ]"
 }
 
 ###############################################################################
